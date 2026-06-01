@@ -55,17 +55,23 @@
       justify-content: center;
       border: 1px solid #eeeeee;
       overflow: hidden;
+      contain: layout paint;
     }
 
     .product-image {
-      max-width: 82%;
-      max-height: 560px;
+      width: 82%;
+      height: 560px;
       object-fit: contain;
-      display: none;
+      display: block;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateZ(0);
+      will-change: opacity;
     }
 
     .product-image.is-visible {
-      display: block;
+      opacity: 1;
+      visibility: visible;
     }
 
     .details {
@@ -286,8 +292,8 @@
       }
 
       .product-image {
-        max-width: 86%;
-        max-height: 380px;
+        width: 86%;
+        height: 380px;
       }
     }
   </style>
@@ -297,7 +303,7 @@
 
   <main class="page">
     <section class="image-panel" aria-label="Product image area">
-      <img id="productImage" class="product-image" src="" alt="" />
+      <img id="productImage" class="product-image" src="" alt="" decoding="async" loading="eager" />
     </section>
 
     <section class="details">
@@ -336,6 +342,42 @@
     let selectedProductImage = '';
     let selectedProductPrice = '';
     let selectedNoBuy = '0';
+
+    const preloadedImages = new Map();
+
+    function preloadImage(src) {
+      if (!src || preloadedImages.has(src)) return;
+
+      const img = new Image();
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.src = src;
+
+      preloadedImages.set(src, img);
+
+      if (img.decode) {
+        img.decode().catch(() => {});
+      }
+    }
+
+    function preloadProductImages() {
+      if (!Array.isArray(window.PRODUCTS)) return;
+
+      window.PRODUCTS.forEach((product) => {
+        preloadImage(product.image);
+      });
+
+      preloadImage('product-images/More Alternative.png');
+    }
+
+    function showProductImage(src, alt) {
+      if (!src) return;
+
+      preloadImage(src);
+      productImage.src = src;
+      productImage.alt = alt || '';
+      productImage.classList.add('is-visible');
+    }
 
     function shuffleArray(array) {
       const shuffled = [...array];
@@ -416,14 +458,10 @@
 
       if (option.dataset.noBuy === 'true') {
         selectedName.classList.add('no-buy-option');
-        productImage.src = option.dataset.image;
-        productImage.alt = option.dataset.name;
-        productImage.classList.add('is-visible');
+        showProductImage(option.dataset.image, option.dataset.name);
       } else {
         trigger.appendChild(selectedPrice);
-        productImage.src = option.dataset.image;
-        productImage.alt = option.dataset.name;
-        productImage.classList.add('is-visible');
+        showProductImage(option.dataset.image, option.dataset.name);
       }
       productSelect.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
@@ -453,6 +491,7 @@
     });
 
     buildProductOptions();
+    preloadProductImages();
   </script>
 </body>
 </html>
