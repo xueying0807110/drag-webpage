@@ -42,7 +42,7 @@
       margin: 0 auto;
       padding: 48px 32px 72px;
       display: grid;
-      grid-template-columns: minmax(360px, 1.1fr) minmax(320px, 0.9fr);
+      grid-template-columns: minmax(320px, 0.9fr) minmax(360px, 1.1fr);
       gap: 56px;
       align-items: stretch;
     }
@@ -302,11 +302,7 @@
   <header class="topbar">LUNVIERO</header>
 
   <main class="page">
-    <section class="image-panel" aria-label="Product image area">
-      <img id="productImage" class="product-image" src="" alt="" decoding="async" loading="eager" />
-    </section>
-
-    <section class="details">
+    <section class="details" aria-label="Product selection area">
       <div class="brand">Aurelia Studio</div>
       <h1>Nilestone Mouse Pad</h1>
       <div class="subtitle">
@@ -326,6 +322,10 @@
 
       <button class="button" type="button">Continue</button>
 
+    </section>
+
+    <section class="image-panel" aria-label="Product image area">
+      <img id="productImage" class="product-image" src="" alt="" decoding="async" loading="eager" />
     </section>
   </main>
 
