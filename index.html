@@ -481,7 +481,9 @@
       }
 
       window.parent.postMessage({
-        type: 'LUNVIERO_CONTINUE',
+        type: 'netlify_complete',
+        choice: selectedProductName,
+        page: window.location.pathname,
         selectedProduct: selectedProductName,
         selectedPrice: selectedProductPrice,
         selectedProductImage: selectedProductImage,
